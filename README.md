@@ -1,16 +1,13 @@
-# currency_coverter
+# Currency converter
 
-A new Flutter project.
 
-## Getting Started
+### Output 1 ---------------------- : Output 2                  
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<p>
+  <img align="left" src="https://user-images.githubusercontent.com/96048173/195394273-016b48de-e6f2-4b30-af65-99009e627211.jpg" alt="Screenshot_20221012_213812" width=230 height=480/>
+  
+  <img align="left" src="https://user-images.githubusercontent.com/96048173/195394278-0f6673f9-4765-42cc-9099-f6cb97b2a4f7.jpg" alt="Screenshot_20221012_213819" width=230 height=480/>
+  
+  </p>
+  
