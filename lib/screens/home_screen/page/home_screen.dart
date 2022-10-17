@@ -1,5 +1,11 @@
+import 'package:currency_converter/currency.dart' as data;
+import 'package:currency_converter/currency_converter.dart';
+import 'package:currency_converter/Currency.dart';
+import 'package:currency_coverter/helpers/currency_converter_helper.dart';
+import 'package:currency_coverter/modals/currency_converter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,165 +15,225 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<CurrencyConvert?> future;
+
   String dropDownValue = 'AUD';
 
   List currency = [
-    'AUD',
-    'AST',
-    'CAT',
-    'CNX',
-    'EVR',
-    'GUP',
-    'HVN',
-    'INS',
-    'ITC',
-    'MOD',
-    'MNX',
-    'NVC',
+    "USD",
+    "AUD",
+    "BBD",
+    "BSD",
+    "BTC",
+    "BTN",
+    "EUR",
+    "MRU",
+    "MXN",
+    "RSD",
+    "RUB",
+    "RWF",
+    "SAR",
+    "INR",
+    "XDR",
+    "XOF",
+    "XPD",
+    "XPF",
   ];
+  String fromCurrency = "USD";
+  String toCurrency = "INR";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    future = CurrencyConvertApiHelper.currencyConvertApiHelper.currencyConvertorAPI(from: "BTC", to: "AUD");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: const Text(" 😃 Currency Converter "), centerTitle: true),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.all(15),
-              height: 70,
-              width: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueAccent,
-              ),
-              child: Center(
-                child: Text(
-                  "1 BTC = 32962.88 AUD",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(15),
-              height: 70,
-              width: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueAccent,
-              ),
-              child: Center(
-                child: Text(
-                  "1 ETH = 2409.57 AUD",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(15),
-              height: 70,
-              width: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueAccent,
-              ),
-              child: Center(
-                child: Text(
-                  "1 XRP = 0.5327 AUD",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(15),
-              height: 70,
-              width: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueAccent,
-              ),
-              child: Center(
-                child: Text(
-                  "1 USDT = 1.4356 AUD",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(15),
-              height: 70,
-              width: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueAccent,
-              ),
-              child: Center(
-                child: Text(
-                  "1 BCH = 200.55 AUD",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Spacer(),
-            Container(
-              height: 70,
-              width: double.infinity,
-              color: Colors.blueAccent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  children: [
-                    Text(
-                      "Current Currency",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
+      appBar: AppBar(title: const Text(" 😃 Currency Converter "), centerTitle: true),
+      body: FutureBuilder(
+        future: future,
+        builder: (context, snapShot) {
+          if (snapShot.hasError) {
+            return Center(
+              child: Text("${snapShot.error}"),
+            );
+          } else if (snapShot.hasData) {
+            CurrencyConvert? data = snapShot.data as CurrencyConvert?;
+
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text("Amount  :", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 80,
+                  ),
+                  SizedBox(
+                    height: 182,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Currency : ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                DropdownButtonFormField(
+                                  value: fromCurrency,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      fromCurrency = val!.toString();
+                                    });
+                                  },
+                                  items: currency.map((e) {
+                                    return DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("To Convert : ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                DropdownButtonFormField(
+                                  value: toCurrency,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      toCurrency = val!.toString();
+                                    });
+                                  },
+                                  items: currency.map((e) {
+                                    return DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Spacer(),
-                    DropdownButton(
-                        value: dropDownValue,
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Result : ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "$fromCurrency =",
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              decoration: TextDecoration.none,
+                              fontSize: 27,
+                            ),
+                          ),
+                          Text(
+                            " 1",
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              decoration: TextDecoration.none,
+                              fontSize: 27,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "THEN,",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
+                          color: Colors.black54,
+                          decoration: TextDecoration.none,
+                          fontSize: 27,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "$toCurrency :",
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              decoration: TextDecoration.none,
+                              fontSize: 27,
+                            ),
+                          ),
+                          Text(
+                            " ${data!.rate.roundToDouble()}",
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              decoration: TextDecoration.none,
+                              fontSize: 27,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          future = CurrencyConvertApiHelper.currencyConvertApiHelper
+                              .currencyConvertorAPI(
+                            from: fromCurrency,
+                            to: toCurrency,
+                          );
+                        });
+                      },
+                      child: const Text(
+                        "CONVERT",
+                        style: TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-                        dropdownColor: Colors.blueAccent,
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        items: currency.map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            dropDownValue = val.toString();
-                          });
-                        })
-                  ],
-                ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-            ),
-          ],
-        ),
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }
